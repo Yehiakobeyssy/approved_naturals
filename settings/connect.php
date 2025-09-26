@@ -1,7 +1,7 @@
 <?php
 	$websiteaddresse='http://localhost/work/YKtechnology/';
 	$domain='localhost';
-	$dbname='yktechnology';
+	$dbname='approved_natural';
 	$dsn = 'mysql:host='.$domain.';dbname='.$dbname;
 	$user = 'root';
 	$pass = '';
