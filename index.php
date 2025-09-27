@@ -10,7 +10,7 @@ include 'common/head.php';
 <link rel="stylesheet" href="common/fcss/all.min.css">
 <link rel="stylesheet" href="common/fcss/fontawesome.min.css">
 <link rel="stylesheet" href="common/root.css">
-<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="index.css?v=1.1">
 </head>
 <body>
 
@@ -75,6 +75,27 @@ $section = $stmt->fetch(PDO::FETCH_ASSOC);
     </div>
 </section>
 
+<section id="classes">
+    <div class="container">
+        <h2>Our Classes</h2>
+        <div class="row">
+            <?php
+                $stmt = $con->prepare('SELECT * FROM tblClasses');
+                $stmt->execute();
+                $classes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                foreach($classes as $class){
+                ?>
+                    <div class="col-md-6 service-card">
+                        <img src="images/<?php echo $class['classImg']; ?>" alt="<?php echo $class['classTitle']; ?>">
+                        <h3><?php echo $class['classTitle']; ?></h3>
+                        <p><?php echo $class['classTitle']; ?></p>
+                    </div>
+                <?php 
+                }
+            ?>
+        </div>
+    </div>
+</section>
 <!-- Contact Section -->
 <?php
 $stmt = $con->prepare("SELECT * FROM tblContact WHERE contactID=1");
@@ -87,6 +108,8 @@ $contact = $stmt->fetch(PDO::FETCH_ASSOC);
         <div class="contact-wrapper">
             <form id="contactForm" method="post">
                 <input type="text" name="name" placeholder="Your Name" required>
+                <input type="text" name="companyName" placeholder="Company Name">
+                <input type="text" name="phoneNumber" placeholder="Phone Number">
                 <input type="email" name="email" placeholder="Your Email" required>
                 <textarea name="message" placeholder="Your Message" required></textarea>
                 <button type="submit" class="btn">Send Message</button>
@@ -94,7 +117,6 @@ $contact = $stmt->fetch(PDO::FETCH_ASSOC);
             <div class="contact-info">
                 <img src="images/logo.png" alt="Contact Image" style="width: 75px; height:75px">
                 <p><strong>Email:</strong> <?php echo $contact['email']; ?></p>
-                
                 <p><strong>Address:</strong> <?php echo $contact['address']; ?></p>
                 <p><strong>Days:</strong> <?php echo $contact['days_opening']; ?></p>
                 <p><strong>Hours:</strong> <?php echo $contact['hours_opening']; ?></p>

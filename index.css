@@ -77,12 +77,12 @@
 }
 
 /* Services */
-#services {
+#services , #classes {
     padding: 100px 20px;
     background: #F5F5F5;
     text-align: center;
 }
-#services h2 {
+#services h2 , #classes h2{
     font-size: 32px;
     margin-bottom: 50px;
 }
@@ -178,11 +178,14 @@ footer {
     text-align: center;
     font-size: 16px;
 }
-
+#classes {
+    margin-top: 20px;
+    
+}
 /* Media Queries */
 @media (max-width: 992px) {
     #hero .overlay { padding: 50px 30px; }
-    #help h2, #services h2, #contact h2 { font-size: 28px; }
+    #help h2, #services h2, #contact h2 , #classes h2{ font-size: 28px; }
     .service-card h3 { font-size: 22px; }
 }
 

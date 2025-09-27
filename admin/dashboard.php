@@ -10,7 +10,7 @@ if(!isset($_SESSION['admin_id'])){
     exit;
 }
 
-// ======= تحديث Section (Hero + About) =======
+// ======= Section Hero + About =======
 if(isset($_POST['update_section'])){
     $hero_title = htmlspecialchars($_POST['hero_title']);
     $hero_content = htmlspecialchars($_POST['hero_content']);
@@ -30,7 +30,7 @@ if(isset($_POST['update_section'])){
     $success = "Section updated successfully!";
 }
 
-// ======= إضافة خدمة جديدة =======
+// ======= Services CRUD =======
 if(isset($_POST['add_service'])){
     $service_title = htmlspecialchars($_POST['service_title']);
     $service_description = htmlspecialchars($_POST['service_description']);
@@ -43,7 +43,6 @@ if(isset($_POST['add_service'])){
     $success = "Service added successfully!";
 }
 
-// ======= تعديل خدمة موجودة =======
 if(isset($_POST['update_service'])){
     $serviceID = $_POST['serviceID'];
     $service_title = htmlspecialchars($_POST['service_title']);
@@ -62,7 +61,6 @@ if(isset($_POST['update_service'])){
     $success = "Service updated successfully!";
 }
 
-// ======= حذف خدمة =======
 if(isset($_GET['delete_service'])){
     $id = intval($_GET['delete_service']);
     $stmt = $con->prepare("DELETE FROM tblServices WHERE serviceID=?");
@@ -70,7 +68,49 @@ if(isset($_GET['delete_service'])){
     $success = "Service deleted successfully!";
 }
 
-// ======= تحديث Contact =======
+// ======= Classes CRUD =======
+if(isset($_POST['add_class'])){
+    $classTitle = htmlspecialchars($_POST['classTitle']);
+    $classDiscription = htmlspecialchars($_POST['classDiscription']);
+    
+    if(isset($_FILES['classImg']) && $_FILES['classImg']['name'] != ""){
+        $ext = pathinfo($_FILES['classImg']['name'], PATHINFO_EXTENSION);
+        $newName = time().rand(1000,9999).".".$ext;
+        move_uploaded_file($_FILES['classImg']['tmp_name'], "../images/".$newName);
+
+        $stmt = $con->prepare("INSERT INTO tblClasses (classImg, classTitle, classDiscription) VALUES (?,?,?)");
+        $stmt->execute([$newName, $classTitle, $classDiscription]);
+        $success = "Class added successfully!";
+    }
+}
+
+if(isset($_POST['update_class'])){
+    $classID = $_POST['classID'];
+    $classTitle = htmlspecialchars($_POST['classTitle']);
+    $classDiscription = htmlspecialchars($_POST['classDiscription']);
+
+    if(isset($_FILES['classImg']) && $_FILES['classImg']['name'] != ""){
+        $ext = pathinfo($_FILES['classImg']['name'], PATHINFO_EXTENSION);
+        $newName = time().rand(1000,9999).".".$ext;
+        move_uploaded_file($_FILES['classImg']['tmp_name'], "../images/".$newName);
+
+        $stmt = $con->prepare("UPDATE tblClasses SET classImg=?, classTitle=?, classDiscription=? WHERE classID=?");
+        $stmt->execute([$newName, $classTitle, $classDiscription, $classID]);
+    } else {
+        $stmt = $con->prepare("UPDATE tblClasses SET classTitle=?, classDiscription=? WHERE classID=?");
+        $stmt->execute([$classTitle, $classDiscription, $classID]);
+    }
+    $success = "Class updated successfully!";
+}
+
+if(isset($_GET['delete_class'])){
+    $id = intval($_GET['delete_class']);
+    $stmt = $con->prepare("DELETE FROM tblClasses WHERE classID=?");
+    $stmt->execute([$id]);
+    $success = "Class deleted successfully!";
+}
+
+// ======= Contact Update =======
 if(isset($_POST['update_contact'])){
     $email = htmlspecialchars($_POST['email']);
     $phone = htmlspecialchars($_POST['phone_number']);
@@ -83,9 +123,10 @@ if(isset($_POST['update_contact'])){
     $success = "Contact updated successfully!";
 }
 
-// ======= جلب البيانات =======
+// ======= Fetch Data =======
 $section = $con->query("SELECT * FROM tblSection WHERE sectionID=1")->fetch(PDO::FETCH_ASSOC);
 $services = $con->query("SELECT * FROM tblServices")->fetchAll(PDO::FETCH_ASSOC);
+$classes = $con->query("SELECT * FROM tblClasses")->fetchAll(PDO::FETCH_ASSOC);
 $contact = $con->query("SELECT * FROM tblContact WHERE contactID=1")->fetch(PDO::FETCH_ASSOC);
 ?>
 
@@ -100,7 +141,7 @@ button:hover { background: #388E3C; }
 .service-box { border:1px solid #ddd; padding:15px; margin-bottom:15px; border-radius:8px; background:#f9f9f9; position:relative; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; }
 .service-box img { width:120px; height:120px; object-fit:cover; border-radius:6px; margin-right:15px; }
 .service-flex { display:flex; align-items:center; gap:15px; width:100%; flex-wrap:wrap; }
-.add-service-btn { margin-bottom:20px; }
+.add-btn { margin-bottom:20px; }
 .success { color: green; margin-bottom: 15px; }
 .delete-service { background:#e74c3c; margin-top:10px; }
 .delete-service:hover { background:#c0392b; }
@@ -137,7 +178,7 @@ button:hover { background: #388E3C; }
 <!-- Services -->
 <div class="section-box">
 <h3>Services</h3>
-<button type="button" class="add-service-btn btn btn-sm btn-success">Add New Service</button>
+<button type="button" class="add-btn btn btn-sm btn-success" data-target="services-list">Add New Service</button>
 <div id="services-list">
 <?php foreach($services as $s): ?>
 <div class="service-box">
@@ -154,6 +195,34 @@ button:hover { background: #388E3C; }
 <input type="file" name="service_img">
 <button type="submit" name="update_service">Update Service</button>
 <a href="?delete_service=<?php echo $s['serviceID']; ?>" class="btn delete-service">Delete Service</a>
+</div>
+</div>
+</form>
+</div>
+<?php endforeach; ?>
+</div>
+</div>
+
+<!-- Classes -->
+<div class="section-box">
+<h3>Classes</h3>
+<button type="button" class="add-btn btn btn-sm btn-success" data-target="classes-list">Add New Class</button>
+<div id="classes-list">
+<?php foreach($classes as $c): ?>
+<div class="service-box">
+<form method="post" enctype="multipart/form-data">
+<div class="service-flex">
+<img src="../images/<?php echo $c['classImg']; ?>" alt="">
+<div style="flex:1">
+<input type="hidden" name="classID" value="<?php echo $c['classID']; ?>">
+<label>Class Title</label>
+<input type="text" name="classTitle" value="<?php echo $c['classTitle']; ?>" required>
+<label>Class Description</label>
+<textarea name="classDiscription" required><?php echo $c['classDiscription']; ?></textarea>
+<label>Class Image</label>
+<input type="file" name="classImg">
+<button type="submit" name="update_class">Update Class</button>
+<a href="?delete_class=<?php echo $c['classID']; ?>" class="btn delete-service">Delete Class</a>
 </div>
 </div>
 </form>
@@ -180,26 +249,48 @@ button:hover { background: #388E3C; }
 </form>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function(){
-    // إضافة مربع خدمة جديد
-    $('.add-service-btn').click(function(){
-       var newService = `<div class="service-box">
-            <form method="post" enctype="multipart/form-data">
-                <div class="service-flex">
-                    <div style="flex:1">
-                        <label>Service Title</label>
-                        <input type="text" name="service_title" placeholder="Service Title" required>
-                        <label>Service Description</label>
-                        <textarea name="service_description" placeholder="Service Description" required></textarea>
-                        <label>Service Image</label>
-                        <input type="file" name="service_img" required>
-                        <button type="submit" name="add_service">Add Service</button>
+    $('.add-btn').click(function(){
+        var target = $(this).data('target');
+        var container = $('#' + target);
+        if(target == 'services-list'){
+            var newBox = `<div class="service-box">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="service-flex">
+                        <div style="flex:1">
+                            <label>Service Title</label>
+                            <input type="text" name="service_title" placeholder="Service Title" required>
+                            <label>Service Description</label>
+                            <textarea name="service_description" placeholder="Service Description" required></textarea>
+                            <label>Service Image</label>
+                            <input type="file" name="service_img" required>
+                            <button type="submit" name="add_service">Add Service</button>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>`;
-        $('#services-list').append(newService);
+                </form>
+            </div>`;
+            container.append(newBox);
+        }
+        if(target == 'classes-list'){
+            var newBox = `<div class="service-box">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="service-flex">
+                        <div style="flex:1">
+                            <label>Class Title</label>
+                            <input type="text" name="classTitle" placeholder="Class Title" required>
+                            <label>Class Description</label>
+                            <textarea name="classDiscription" placeholder="Class Description" required></textarea>
+                            <label>Class Image</label>
+                            <input type="file" name="classImg" required>
+                            <button type="submit" name="add_class">Add Class</button>
+                        </div>
+                    </div>
+                </form>
+            </div>`;
+            container.append(newBox);
+        }
     });
 });
 </script>
