@@ -94,7 +94,7 @@ $contact = $stmt->fetch(PDO::FETCH_ASSOC);
             <div class="contact-info">
                 <img src="images/logo.png" alt="Contact Image" style="width: 75px; height:75px">
                 <p><strong>Email:</strong> <?php echo $contact['email']; ?></p>
-                <p><strong>Phone:</strong> <?php echo $contact['phone_number']; ?></p>
+                
                 <p><strong>Address:</strong> <?php echo $contact['address']; ?></p>
                 <p><strong>Days:</strong> <?php echo $contact['days_opening']; ?></p>
                 <p><strong>Hours:</strong> <?php echo $contact['hours_opening']; ?></p>
