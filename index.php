@@ -10,7 +10,7 @@ include 'common/head.php';
 <link rel="stylesheet" href="common/fcss/all.min.css">
 <link rel="stylesheet" href="common/fcss/fontawesome.min.css">
 <link rel="stylesheet" href="common/root.css">
-<link rel="stylesheet" href="index.css?v=1.1">
+<link rel="stylesheet" href="index.css?v=1.3">
 </head>
 <body>
 
@@ -88,7 +88,7 @@ $section = $stmt->fetch(PDO::FETCH_ASSOC);
                     <div class="col-md-6 service-card">
                         <img src="images/<?php echo $class['classImg']; ?>" alt="<?php echo $class['classTitle']; ?>">
                         <h3><?php echo $class['classTitle']; ?></h3>
-                        <p><?php echo $class['classTitle']; ?></p>
+                        <p><?php echo $class['classDiscription']; ?></p>
                     </div>
                 <?php 
                 }

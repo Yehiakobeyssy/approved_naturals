@@ -76,7 +76,7 @@
     margin: 0 auto;
 }
 
-/* Services */
+/* Services & Classes */
 #services , #classes {
     padding: 100px 20px;
     background: #F5F5F5;
@@ -86,26 +86,57 @@
     font-size: 32px;
     margin-bottom: 50px;
 }
-.service-card {
-    margin-bottom: 50px;
+
+/* Row Style */
+#services .row, #classes .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4%;
 }
-.service-card img {
+
+/* Card Style */
+.service-card {
+    width: 48%;   /* ياخد تقريبًا نص الشاشة */
+    margin-bottom: 40px;
+    text-align: center;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Images مربعة */
+.service-card img ,#classes  img{
     width: 100%;
-    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;   /* يخلي الصورة كاملة */
+    background: #f9f9f9;   /* فراغ حوالين الصور */
     border-radius: 12px;
-    transition: transform 0.3s;
+    margin-bottom: 20px;
 }
 .service-card img:hover {
     transform: scale(1.05);
 }
+
 .service-card h3 {
     color: #4CAF50;
-    margin-top: 20px;
-    font-size: 24px;
-}
-.service-card p {
-    font-size: 16px;
     margin-top: 10px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.service-card p {
+    font-size: 17px;
+    margin-top: 10px;
+    color: #555;
+    line-height: 1.6;
+    padding: 0 10px;
 }
 
 /* Contact */
@@ -178,15 +209,24 @@ footer {
     text-align: center;
     font-size: 16px;
 }
-#classes {
-    margin-top: 20px;
-    
-}
+
 /* Media Queries */
 @media (max-width: 992px) {
+    #services .row, #classes .row {
+        flex-direction: column;
+        gap: 30px;
+    }
+    .service-card {
+        width: 100%;  /* موبايل = كارد واحد */
+    }
+    .service-card h3 {
+        font-size: 20px;
+    }
+    .service-card p {
+        font-size: 15px;
+    }
     #hero .overlay { padding: 50px 30px; }
     #help h2, #services h2, #contact h2 , #classes h2{ font-size: 28px; }
-    .service-card h3 { font-size: 22px; }
 }
 
 @media (max-width: 768px) {
@@ -208,20 +248,29 @@ footer {
         margin-top: 30px;
     }
 
-    /* تحسين الحقول على الموبايل */
     #contact form input,
     #contact form textarea {
-        width: 100%;         /* يأخذ كامل عرض الشاشة */
-        padding: 22px;       /* أكبر مساحة للكتابة */
-        font-size: 20px;     /* خط أكبر للراحة */
+        width: 100%;
+        padding: 22px;
+        font-size: 20px;
         border-radius: 10px;
     }
 
     #contact form button {
-        padding: 20px 40px;  /* زر أكبر للضغط باللمس */
+        padding: 20px 40px;
         font-size: 20px;
         border-radius: 10px;
     }
 }
 
-
+@media (max-width: 480px) {
+    .service-card img {
+        border-radius: 10px;
+    }
+    .service-card h3 {
+        font-size: 18px;
+    }
+    .service-card p {
+        font-size: 14px;
+    }
+}
